@@ -335,8 +335,12 @@ async def validate_api(config: dict, current_user: User = Depends(get_current_us
 @app.get("/api/trails")
 async def get_trails(current_user: User = Depends(get_current_user)):
     """Get available trails"""
-    trails = await trails_collection.find({}).to_list(length=None)
-    return trails
+    try:
+        trails_cursor = trails_collection.find({})
+        trails = await trails_cursor.to_list(length=None)
+        return trails
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching trails: {str(e)}")
 
 @app.post("/api/trails")
 async def create_trail(trail_data: TrailCreate, current_user: User = Depends(get_current_user)):
