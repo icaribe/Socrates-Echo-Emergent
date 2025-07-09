@@ -521,6 +521,13 @@ async def generate_quiz(session_data: dict, current_user: User = Depends(get_cur
         # Create AI chat for quiz generation
         chat = await create_ai_chat(current_user.id, str(uuid.uuid4()))
         
+        # Convert session messages to a serializable format
+        serializable_messages = []
+        for msg in session.get('messages', []):
+            # Create a copy of the message without datetime objects
+            msg_copy = {k: v for k, v in msg.items() if k != 'timestamp'}
+            serializable_messages.append(msg_copy)
+        
         # Generate quiz based on session messages
         quiz_prompt = f"""Baseado na conversa anterior, crie um quiz de 5 perguntas sobre os temas discutidos.
         
@@ -536,7 +543,7 @@ async def generate_quiz(session_data: dict, current_user: User = Depends(get_cur
             ]
         }}
         
-        Mensagens da sessão: {json.dumps(session.get('messages', []))}
+        Mensagens da sessão: {json.dumps(serializable_messages)}
         """
         
         message = UserMessage(text=quiz_prompt)
