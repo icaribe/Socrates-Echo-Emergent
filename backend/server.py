@@ -336,8 +336,13 @@ async def validate_api(config: dict, current_user: User = Depends(get_current_us
 async def get_trails(current_user: User = Depends(get_current_user)):
     """Get available trails"""
     try:
-        trails_cursor = trails_collection.find({})
-        trails = await trails_cursor.to_list(length=None)
+        # Convert MongoDB documents to dictionaries
+        trails = []
+        async for trail in trails_collection.find({}):
+            # Convert ObjectId to string for JSON serialization
+            if "_id" in trail:
+                trail["_id"] = str(trail["_id"])
+            trails.append(trail)
         return trails
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching trails: {str(e)}")
