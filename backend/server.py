@@ -208,15 +208,18 @@ async def generate_image(prompt: str, user_id: str):
     """Generate image using user's API configuration"""
     config = await get_user_api_config(user_id)
     
-    if config["provider"] == "openai":
-        image_gen = OpenAIImageGeneration(api_key=config["api_key"])
-        images = await image_gen.generate_images(
-            prompt=prompt,
-            model="dall-e-3",
-            number_of_images=1
-        )
-        if images and len(images) > 0:
-            return base64.b64encode(images[0]).decode('utf-8')
+    try:
+        if config["provider"] == "openai":
+            image_gen = OpenAIImageGeneration(api_key=config["api_key"])
+            images = await image_gen.generate_images(
+                prompt=prompt,
+                model="dall-e-3",
+                number_of_images=1
+            )
+            if images and len(images) > 0 and images[0] is not None:
+                return base64.b64encode(images[0]).decode('utf-8')
+    except Exception as e:
+        print(f"Error generating image: {str(e)}")
     
     return None
 
