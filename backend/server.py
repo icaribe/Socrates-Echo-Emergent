@@ -465,7 +465,11 @@ async def chat_with_ai(message_data: ChatMessage, current_user: User = Depends(g
         # Generate image if prompt provided
         image_base64 = None
         if ai_response.get("image_prompt"):
-            image_base64 = await generate_image(ai_response["image_prompt"], current_user.id)
+            try:
+                image_base64 = await generate_image(ai_response["image_prompt"], current_user.id)
+            except Exception as e:
+                print(f"Error generating image: {str(e)}")
+                # Continue without image if generation fails
         
         # Save message to session
         if message_data.session_id:
