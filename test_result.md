@@ -279,14 +279,18 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User Authentication System"
     - "OpenAI Integration with emergentintegrations"
-    - "API Configuration System"
     - "Chat System with AI Tutor"
-  stuck_tasks: []
+    - "Learning Trails System"
+  stuck_tasks:
+    - "OpenAI Integration with emergentintegrations"
+    - "Chat System with AI Tutor"
+    - "Learning Trails System"
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
     message: "Created complete Socrates' Echo platform with authentication, OpenAI integration, chat system, and trail management. All core features implemented and ready for testing. Using emergentintegrations library for LLM and image generation. Default OpenAI key configured, users can add their own APIs. Please test authentication, API validation, and chat functionality first."
+  - agent: "testing"
+    message: "Completed backend testing. User Authentication, API Configuration, Quiz Generation, and Class Management systems are working correctly. Found issues with OpenAI Integration (image generation), Chat System (fails due to image generation error), and Learning Trails System (get_trails endpoint returns 500 error). The main issue appears to be in the generate_image function where it's trying to encode a None value as base64."
